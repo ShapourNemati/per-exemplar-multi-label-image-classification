@@ -57,6 +57,7 @@
     <Compile Include="MultiClassRankingForm.Designer.cs">
       <DependentUpon>MultiClassRankingForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MultiClassRanking\DenseSiftExtractor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
