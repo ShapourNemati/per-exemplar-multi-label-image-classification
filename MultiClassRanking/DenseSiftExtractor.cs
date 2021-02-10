@@ -18,22 +18,22 @@ namespace PerExemplarMultiLabelImageClassification.MultiClassRanking
         public IOutputArray[] ComputeDescriptor(Image<Bgr, byte> img)
         {
             SIFT sift = new SIFT();
-            IOutputArray[] descriptors = { new Mat(), new Mat(), new Mat(), new Mat(), new Mat() };
+            IOutputArray[] descriptorsList = { new Mat(), new Mat(), new Mat(), new Mat(), new Mat() };
             
-            int pointsSize = 
-                (int) Math.Ceiling((double)img.Width / spacing) 
-                * 
-                (int) Math.Ceiling((double)img.Height / spacing);
 
-            int maxRadius = radiuses[radiuses.Length - 1];
             int descriptorsIndex = 0;
             foreach (int r in radiuses)
             {
+                int pointsSize = 
+                    (int) Math.Ceiling((double)(img.Width - 2 * r) / spacing) 
+                    * 
+                    (int) Math.Ceiling((double)(img.Height - 2 * r) / spacing);
                 int keypoint_index = 0;
                 MKeyPoint[] points = new MKeyPoint[pointsSize];
-                for (int i = maxRadius; i < img.Width - maxRadius; i += spacing)
+
+                for (int i = r; i < img.Width - r; i += spacing)
                 {
-                    for (int j = maxRadius; j < img.Height - maxRadius; j += spacing)
+                    for (int j = r; j < img.Height - r; j += spacing)
                     {
                         MKeyPoint p = new MKeyPoint();
                         p.Point = new System.Drawing.PointF(i, j);
@@ -42,13 +42,13 @@ namespace PerExemplarMultiLabelImageClassification.MultiClassRanking
                     }
                 }
                 Emgu.CV.Util.VectorOfKeyPoint keyPoints = new Emgu.CV.Util.VectorOfKeyPoint(points);
-                IOutputArray descriptor = new Mat();
-                sift.Compute(img, keyPoints, descriptor);
-                descriptors.SetValue(descriptor, descriptorsIndex);
+                IOutputArray descriptors = new Mat();
+                sift.Compute(img, keyPoints, descriptors);
+                descriptorsList.SetValue(descriptors, descriptorsIndex);
                 descriptorsIndex++;
             }
 
-            return descriptors;
+            return descriptorsList;
         }
 
     }
