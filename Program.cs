@@ -29,8 +29,7 @@ namespace PerExemplarMultiLabelImageClassification
         {
             Image<Bgr, byte> img = new Image<Bgr, byte>("E:\\UNI\\VISIONE\\Lab\\02 - CBIR system-20191016\\CeramicheFaenza\\Test\\0018_-_piatto_palmetta_40cm_2.jpg");
             DenseSiftExtractor extractor = new DenseSiftExtractor();
-            Mat descriptor = (Mat)extractor.ComputeDescriptor(img);
-            Console.WriteLine(descriptor.GetValueRange().Max + " " + descriptor.GetValueRange().Min);
+            extractor.ComputeDescriptor(img);
             Console.ReadLine();
         }
     }
