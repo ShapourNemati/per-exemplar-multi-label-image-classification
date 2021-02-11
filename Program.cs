@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Emgu.CV;
 using Emgu.CV.Features2D;
 using Emgu.CV.Structure;
+using Emgu.CV.Util;
 using Emgu.CV.XFeatures2D;
 using PerExemplarMultiLabelImageClassification.MultiClassRanking;
 
@@ -30,7 +31,8 @@ namespace PerExemplarMultiLabelImageClassification
         {
             Image<Bgr, byte> img = new Image<Bgr, byte>("E:\\UNI\\VISIONE\\Lab\\02 - CBIR system-20191016\\CeramicheFaenza\\Test\\0018_-_piatto_palmetta_40cm_2.jpg");
             DenseSiftExtractor extractor = new DenseSiftExtractor();
-            extractor.ComputeDescriptor(img);
+            extractor.DenseSampling(img);
+            extractor.ComputeDescriptor(img, extractor.DenseSampling(img));
             Console.ReadLine();
         }
 
@@ -39,8 +41,8 @@ namespace PerExemplarMultiLabelImageClassification
             Image<Bgr, byte> img = new Image<Bgr, byte>("E:\\UNI\\VISIONE\\Lab\\02 - CBIR system-20191016\\CeramicheFaenza\\Test\\0018_-_piatto_palmetta_40cm_2.jpg");
             Image<Bgr, byte> img2 = new Image<Bgr, byte>("E:\\UNI\\VISIONE\\Lab\\02 - CBIR system-20191016\\CeramicheFaenza\\Test\\0010_-_piatto_pavona_cm_20.jpg");
             DenseSiftExtractor extractor = new DenseSiftExtractor();
-            Mat x = (Mat) extractor.ComputeDescriptor(img);
-            Mat y = (Mat) extractor.ComputeDescriptor(img2);
+            Mat x = (Mat) extractor.ComputeDescriptor(img, extractor.DenseSampling(img));
+            Mat y = (Mat) extractor.ComputeDescriptor(img2, extractor.DenseSampling(img2));
             Mat[] descriptors = { x, y };
             var vocabulary = new VocabularyCodebook().getVocabulary(descriptors);
             Console.ReadLine();
@@ -51,14 +53,15 @@ namespace PerExemplarMultiLabelImageClassification
             Image<Bgr, byte> img = new Image<Bgr, byte>("E:\\UNI\\VISIONE\\Lab\\02 - CBIR system-20191016\\CeramicheFaenza\\Test\\0018_-_piatto_palmetta_40cm_2.jpg");
             Image<Bgr, byte> img2 = new Image<Bgr, byte>("E:\\UNI\\VISIONE\\Lab\\02 - CBIR system-20191016\\CeramicheFaenza\\Test\\0010_-_piatto_pavona_cm_20.jpg");
             DenseSiftExtractor extractor = new DenseSiftExtractor();
-            Mat x = (Mat)extractor.ComputeDescriptor(img);
-            Mat y = (Mat)extractor.ComputeDescriptor(img2);
+            VectorOfKeyPoint imgKeyPoints = extractor.DenseSampling(img);
+            Mat x = (Mat)extractor.ComputeDescriptor(img, imgKeyPoints);
+            VectorOfKeyPoint imgKeyPoints2 = extractor.DenseSampling(img2);
+            Mat y = (Mat)extractor.ComputeDescriptor(img2, imgKeyPoints2);
             Mat[] descriptors = { x, y };
             var codeBook = new VocabularyCodebook();
             codeBook.computeVocabulary(descriptors, new SIFT());
-            //var z = codeBook.getHistogram(img);
+            var z = codeBook.getHistogram(x, imgKeyPoints);
             Console.ReadLine();
-
         }
     }
 }

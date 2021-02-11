@@ -1,5 +1,6 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
+using Emgu.CV.Util;
 using Emgu.CV.XFeatures2D;
 using System;
 using System.Collections.Generic;
@@ -16,9 +17,16 @@ namespace PerExemplarMultiLabelImageClassification.MultiClassRanking
         {
         }
 
-        public IOutputArray ComputeDescriptor(Image<Bgr, byte> img)
+        public IOutputArray ComputeDescriptor(Image<Bgr, byte> img, VectorOfKeyPoint keyPoints)
         {
             SIFT sift = new SIFT();
+            IOutputArray descriptors = new Mat();
+            sift.Compute(img, keyPoints, descriptors);
+            return descriptors;
+        }
+
+        public VectorOfKeyPoint DenseSampling(Image<Bgr, byte> img)
+        {
             List<MKeyPoint> allKeyPoints = new List<MKeyPoint>();
 
             foreach (int r in radiuses)
@@ -34,11 +42,8 @@ namespace PerExemplarMultiLabelImageClassification.MultiClassRanking
                     }
                 }
             }
-            Emgu.CV.Util.VectorOfKeyPoint keyPoints = new Emgu.CV.Util.VectorOfKeyPoint(allKeyPoints.ToArray());
-            IOutputArray descriptors = new Mat();
-            sift.Compute(img, keyPoints, descriptors);
-            return descriptors;
+            VectorOfKeyPoint keyPoints = new VectorOfKeyPoint(allKeyPoints.ToArray());
+            return keyPoints;
         }
-
     }
 }
