@@ -24,7 +24,7 @@ namespace PerExemplarMultiLabelImageClassification
             // Application.EnableVisualStyles();
             // Application.SetCompatibleTextRenderingDefault(false);
             // Application.Run(new MultiClassRankingForm());
-            TestBagOfWordsCreation();
+            TestHistogramFromCodebook();
         }
 
         static void TestDenseSiftExctracotr()
@@ -53,14 +53,24 @@ namespace PerExemplarMultiLabelImageClassification
             Image<Bgr, byte> img = new Image<Bgr, byte>("E:\\UNI\\VISIONE\\Lab\\02 - CBIR system-20191016\\CeramicheFaenza\\Test\\0018_-_piatto_palmetta_40cm_2.jpg");
             Image<Bgr, byte> img2 = new Image<Bgr, byte>("E:\\UNI\\VISIONE\\Lab\\02 - CBIR system-20191016\\CeramicheFaenza\\Test\\0010_-_piatto_pavona_cm_20.jpg");
             DenseSiftExtractor extractor = new DenseSiftExtractor();
+            Console.WriteLine("Computing 1st image descriptors");
+            Console.WriteLine(DateTime.Now);
             VectorOfKeyPoint imgKeyPoints = extractor.DenseSampling(img);
             Mat x = (Mat)extractor.ComputeDescriptor(img, imgKeyPoints);
+            Console.WriteLine(DateTime.Now);
+            Console.WriteLine("Computing 2nd image descriptors");
             VectorOfKeyPoint imgKeyPoints2 = extractor.DenseSampling(img2);
             Mat y = (Mat)extractor.ComputeDescriptor(img2, imgKeyPoints2);
+            Console.WriteLine(DateTime.Now);
             Mat[] descriptors = { x, y };
             var codeBook = new VocabularyCodebook();
+            Console.WriteLine("Computing codebook vocabulary");
+            Console.WriteLine(DateTime.Now);
             codeBook.computeVocabulary(descriptors, new SIFT());
-            var z = codeBook.getHistogram(x, imgKeyPoints);
+            Console.WriteLine("Getting img histogram");
+            Console.WriteLine(DateTime.Now);
+            var z = codeBook.getHistogram(img, imgKeyPoints);
+            Console.WriteLine(DateTime.Now);
             Console.ReadLine();
         }
     }
