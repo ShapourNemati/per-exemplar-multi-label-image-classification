@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Emgu.CV;
 using Emgu.CV.Features2D;
 using Emgu.CV.Structure;
+using Emgu.CV.XFeatures2D;
 using PerExemplarMultiLabelImageClassification.MultiClassRanking;
 
 namespace PerExemplarMultiLabelImageClassification
@@ -38,20 +39,26 @@ namespace PerExemplarMultiLabelImageClassification
             Image<Bgr, byte> img = new Image<Bgr, byte>("E:\\UNI\\VISIONE\\Lab\\02 - CBIR system-20191016\\CeramicheFaenza\\Test\\0018_-_piatto_palmetta_40cm_2.jpg");
             Image<Bgr, byte> img2 = new Image<Bgr, byte>("E:\\UNI\\VISIONE\\Lab\\02 - CBIR system-20191016\\CeramicheFaenza\\Test\\0010_-_piatto_pavona_cm_20.jpg");
             DenseSiftExtractor extractor = new DenseSiftExtractor();
-            var x = extractor.ComputeDescriptor(img);
-            var y = extractor.ComputeDescriptor(img2);
-            Mat[] descriptors = new Mat[x.Length + y.Length];
-            int i = 0;
-            foreach (Mat desc in x)
-            {
-                descriptors[i++] = desc;
-            }
-            foreach (Mat desc in y)
-            {
-                descriptors[i++] = desc;
-            }
+            Mat x = (Mat) extractor.ComputeDescriptor(img);
+            Mat y = (Mat) extractor.ComputeDescriptor(img2);
+            Mat[] descriptors = { x, y };
             var vocabulary = new VocabularyCodebook().getVocabulary(descriptors);
             Console.ReadLine();
+        }
+
+        static void TestHistogramFromCodebook()
+        {
+            Image<Bgr, byte> img = new Image<Bgr, byte>("E:\\UNI\\VISIONE\\Lab\\02 - CBIR system-20191016\\CeramicheFaenza\\Test\\0018_-_piatto_palmetta_40cm_2.jpg");
+            Image<Bgr, byte> img2 = new Image<Bgr, byte>("E:\\UNI\\VISIONE\\Lab\\02 - CBIR system-20191016\\CeramicheFaenza\\Test\\0010_-_piatto_pavona_cm_20.jpg");
+            DenseSiftExtractor extractor = new DenseSiftExtractor();
+            Mat x = (Mat)extractor.ComputeDescriptor(img);
+            Mat y = (Mat)extractor.ComputeDescriptor(img2);
+            Mat[] descriptors = { x, y };
+            var codeBook = new VocabularyCodebook();
+            codeBook.computeVocabulary(descriptors, new SIFT());
+            //var z = codeBook.getHistogram(img);
+            Console.ReadLine();
+
         }
     }
 }
