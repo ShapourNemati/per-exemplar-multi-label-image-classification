@@ -37,6 +37,11 @@ namespace PerExemplarMultiLabelImageClassification.MultiClassRanking
             this.vocabulary = getVocabulary(descriptors);
         }
 
+        public void setVocabulary(Mat vocabulary)
+        {
+            this.vocabulary = vocabulary;
+        }
+
         public float[] getHistogram(Mat descriptors)
         {
             double minVal = Double.MaxValue;
