@@ -21,10 +21,11 @@ namespace PerExemplarMultiLabelImageClassification
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MultiClassRankingForm());
+            //Application.EnableVisualStyles();
+            //Application.SetCompatibleTextRenderingDefault(false);
+            //Application.Run(new MultiClassRankingForm());
             //TestHistogramFromCodebook();
+            TestMultiStepTraining();
         }
 
         static void TestDenseSiftExctracotr()
@@ -72,6 +73,19 @@ namespace PerExemplarMultiLabelImageClassification
             var z = codeBook.getHistogram(x);
             Console.WriteLine(DateTime.Now);
             Console.ReadLine();
+        }
+
+        static void TestMultiStepTraining()
+        {
+            MultiStepTraining t = new MultiStepTraining();
+            Image<Bgr, byte> img = new Image<Bgr, byte>("E:\\UNI\\VISIONE\\Lab\\02 - CBIR system-20191016\\CeramicheFaenza\\Test\\0018_-_piatto_palmetta_40cm_2.jpg");
+            Image<Bgr, byte> img2 = new Image<Bgr, byte>("E:\\UNI\\VISIONE\\Lab\\02 - CBIR system-20191016\\CeramicheFaenza\\Test\\0010_-_piatto_pavona_cm_20.jpg");
+            var e = new DenseSiftExtractor();
+            t.ComputeDescriptor(img, e);
+            t.ComputeDescriptor(img2, e);
+            t.SaveDescriptorsToFile("a.bmp");
+            MultiStepTraining t2 = new MultiStepTraining();
+            t2.LoadDescriptorsFromFile("a.bmp");
         }
     }
 }
