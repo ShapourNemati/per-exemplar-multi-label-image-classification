@@ -21,10 +21,10 @@ namespace PerExemplarMultiLabelImageClassification
         [STAThread]
         static void Main()
         {
-            // Application.EnableVisualStyles();
-            // Application.SetCompatibleTextRenderingDefault(false);
-            // Application.Run(new MultiClassRankingForm());
-            TestHistogramFromCodebook();
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new MultiClassRankingForm());
+            //TestHistogramFromCodebook();
         }
 
         static void TestDenseSiftExctracotr()
@@ -69,7 +69,7 @@ namespace PerExemplarMultiLabelImageClassification
             codeBook.computeVocabulary(descriptors, new SIFT());
             Console.WriteLine("Getting img histogram");
             Console.WriteLine(DateTime.Now);
-            var z = codeBook.getHistogram(img, imgKeyPoints);
+            var z = codeBook.getHistogram(x);
             Console.WriteLine(DateTime.Now);
             Console.ReadLine();
         }

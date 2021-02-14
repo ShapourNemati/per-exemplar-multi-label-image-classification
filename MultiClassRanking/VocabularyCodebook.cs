@@ -14,8 +14,7 @@ namespace PerExemplarMultiLabelImageClassification.MultiClassRanking
     {
 
         private int codewordsNumber = 256;
-        private BOWImgDescriptorExtractor descriptorExtractor;
-        private BFMatcher matcher;
+        private Mat vocabulary;
         public VocabularyCodebook()
         {
 
@@ -23,7 +22,7 @@ namespace PerExemplarMultiLabelImageClassification.MultiClassRanking
 
         public Mat getVocabulary(Mat[] descriptors)
         {
-            BOWKMeansTrainer bowTrainer = new BOWKMeansTrainer(codewordsNumber, new MCvTermCriteria(100, 0.01), 3, KMeansInitType.PPCenters);
+            BOWKMeansTrainer bowTrainer = new BOWKMeansTrainer(codewordsNumber, new MCvTermCriteria(10, 0.01), 3, KMeansInitType.PPCenters);
             foreach (Mat descriptor in descriptors)
             {
                 bowTrainer.Add(descriptor);
@@ -35,15 +34,29 @@ namespace PerExemplarMultiLabelImageClassification.MultiClassRanking
 
         public void computeVocabulary(Mat[] descriptors, Feature2D featureExtractor)
         {
-            this.matcher = new BFMatcher(DistanceType.L2);
-            this.descriptorExtractor = new BOWImgDescriptorExtractor(featureExtractor, matcher);
-            this.descriptorExtractor.SetVocabulary(getVocabulary(descriptors));
+            this.vocabulary = getVocabulary(descriptors);
         }
 
-        public Mat getHistogram(Image<Bgr, byte> image, Emgu.CV.Util.VectorOfKeyPoint keyPoints)
+        public float[] getHistogram(Mat descriptors)
         {
-            Mat histogram = new Mat();
-            this.descriptorExtractor.Compute(image, keyPoints, histogram);
+            double minVal = Double.MaxValue;
+            int minIndex = 0;
+            float[] histogram = new float[vocabulary.Height];
+            for (int i = 0; i < descriptors.Rows; i++)
+            {
+                Mat d = descriptors.Row(i);
+                for (int j = 0; j < this.vocabulary.Rows; j++)
+                {
+                    Mat v = this.vocabulary.Row(j);
+                    double x = CvInvoke.Norm(d, v, NormType.L1);
+                    if (x < minVal)
+                    {
+                        minVal = x;
+                        minIndex = j;
+                    }
+                }
+                histogram[minIndex]++;
+            }
             return histogram;
         }
 
